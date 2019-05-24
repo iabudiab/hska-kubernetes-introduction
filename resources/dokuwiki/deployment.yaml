@@ -1,0 +1,40 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: dokuwiki
+  labels:
+    app: dokuwiki
+spec:
+  selector:
+    matchLabels:
+      app: dokuwiki
+  template:
+    metadata:
+      labels:
+        app: dokuwiki
+    spec:
+      containers:
+      - name: dokuwiki
+        image: docker.io/bitnami/dokuwiki:latest
+        env:
+        - name: DOKUWIKI_USERNAME
+          value: "user"
+        - name: DOKUWIKI_FULL_NAME
+          value: "User Name"
+        - name: DOKUWIKI_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: dokuwiki-secret
+              key: dokuwiki-password
+        - name: DOKUWIKI_EMAIL
+          value: "user@example.com"
+        - name: DOKUWIKI_WIKI_NAME
+          value: "My Wiki"
+        ports:
+        - name: http
+          containerPort: 80
+        resources:
+          requests:
+            cpu: 300m
+            memory: 512Mi
